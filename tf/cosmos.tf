@@ -2,7 +2,11 @@ resource "digitalocean_droplet" "cosmos" {
     image = "ubuntu-22-04-x64"
     name = "cosmos"
     region = "ams3"
-    size = "s-1vcpu-1gb-intel"
+    size = "s-2vcpu-2gb-amd"
+    tags = [
+      "blockchain",
+      "test"
+    ]
     ssh_keys = [
       data.digitalocean_ssh_key.chervie.id
     ]
@@ -19,10 +23,11 @@ resource "digitalocean_droplet" "cosmos" {
     inline = [
       "export PATH=$PATH:/usr/bin",
       "export DEBIAN_FRONTEND=noninteractive",
-      "apt update",
-      "apt -qqy upgrade",
-      "apt install -qqy python3-pip",
-      "pip3 install ansible"
+      "export export DEBIAN_PRIORITY=critical",
+      "apt -qy update",
+      "apt -qy -o 'Dpkg::Options::=--force-confdef' -o 'Dpkg::Options::=--force-confold' upgrade",
+      "apt install -qy python3-pip",
+      "pip3 install -q ansible"
     ]
   }
 
