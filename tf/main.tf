@@ -12,6 +12,8 @@ variable "do_token" {
 }
 variable "private_key" {
   sensitive = true
+  type = string
+  default = "~/.ssh/id_rsa"
 }
 
 provider "digitalocean" {

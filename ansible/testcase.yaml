@@ -1,0 +1,18 @@
+---
+
+- name: Common playbook
+  hosts: all
+  gather_facts: true
+  become: no
+  remote_user: root
+
+  tasks:
+  - name: Generating locales
+    community.general.locale_gen:
+      name: "{{ item }}"
+    with_items:
+      - en_US.UTF-8
+      - ru_RU.UTF-8
+  
+  - name: Set default locale
+    command: localectl set-locale LANG=en_US.UTF-8 LC_MESSAGES=en_US.UTF-8 LC_NUMERIC=en_US.UTF-8 LANGUAGE=en_US
