@@ -7,8 +7,12 @@ terraform {
   }
 }
 
-variable "do_token" {}
-variable "private_key" {}
+variable "do_token" {
+  sensitive = true
+}
+variable "private_key" {
+  sensitive = true
+}
 
 provider "digitalocean" {
   token = var.do_token
