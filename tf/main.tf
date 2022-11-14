@@ -8,10 +8,11 @@ terraform {
 }
 
 variable "do_token" {
-  sensitive = true
+  type = string
 }
+
 variable "private_key" {
-  sensitive = true
+  sensitive = false
   type = string
   default = "~/.ssh/id_rsa"
 }
