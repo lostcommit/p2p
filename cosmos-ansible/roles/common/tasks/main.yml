@@ -33,6 +33,6 @@
       - htop
       - mtr-tiny
 
-- name: Set timezone to America/Toronto
+- name: Set timezone to Asia/Tbilisi
   timezone:
-    name: America/Toronto
+    name: Asia/Tbilisi
