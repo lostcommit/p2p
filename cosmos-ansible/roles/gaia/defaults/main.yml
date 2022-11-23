@@ -79,7 +79,7 @@ prometheus_listen_addr: :26660
 instrumentation_namespace: tendermint
 
 ## app.toml variables
-minimum_gas_prices: ''
+minimum_gas_prices: '0.001uatom' # 0.001uatom
 pruning: default
 pruning_keep_recent: '0'
 pruning_keep_every: '0'
@@ -95,7 +95,7 @@ telemetry_enabled: true
 telemetry_enable_hostname: true
 telemetry_enable_hostname_label: false
 telemetry_enable_service_label: false
-prometheus_retention_time: '30'
+prometheus_retention_time: '30d'
 
 ### API
 api_enabled: false

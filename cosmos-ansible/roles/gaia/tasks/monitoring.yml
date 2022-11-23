@@ -7,8 +7,6 @@
 - name: Setup on prometheus server
   include_role:
     name: configure-prometheus
-    apply:
-      delegate_to: "{{ grafana_ssh_url }}"
   when: monitoring_prometheus | default(false) | bool
 
 - name: Setup PANIC on monitoring server

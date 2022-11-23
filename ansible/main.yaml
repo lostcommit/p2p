@@ -5,7 +5,13 @@
   gather_facts: true
   become: no
   remote_user: root
-  vars: 
+  vars:
+    prometheus_targets:
+      node:
+      - targets:
+        - localhost:9100
+        labels:
+          env: cosmos
     sysctl_settings:
       vm.swappiness:
         param_value: 5
@@ -64,6 +70,9 @@
       net.ipv6.conf.default.accept_redirects:
         param_value: 0
 
+  roles:
+  - cloudalchemy.prometheus
+  
   tasks:
   - name: Generating locales
     community.general.locale_gen:
