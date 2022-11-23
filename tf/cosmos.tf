@@ -28,8 +28,7 @@ resource "digitalocean_droplet" "cosmos" {
       "export export DEBIAN_PRIORITY=critical",
       "sleep 60",
       "apt -qy update",
-      "apt install -qy python3-minimal python3-pip wget liblz4-tool aria2 jq chrony lynis",
-      "pip install ansible"
+      "apt install -qy python3-minimal wget liblz4-tool aria2 jq chrony lynis"
     ]
   }
 
