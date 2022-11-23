@@ -37,7 +37,7 @@ resource "digitalocean_droplet" "cosmos" {
   }
   
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ../cosmos-ansible/examples/inventory-theta.yml -e 'target=${self.ipv4_address},' --private-key ${var.private_key} ../cosmos-ansible/gaia.yml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ../cosmos-ansible/examples/inventory-theta.yml -e 'target=${self.ipv4_address}' --private-key ${var.private_key} ../cosmos-ansible/gaia.yml"
   }
 }
 
