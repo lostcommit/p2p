@@ -3,7 +3,7 @@ resource "digitalocean_droplet" "cosmos" {
     image = "ubuntu-22-04-x64"
     name = "cosmos"
     region = "ams3"
-    size = "s-8vcpu-16gb"
+    size = "s-4vcpu-8gb"
     tags = [
       "blockchain",
       "test",
