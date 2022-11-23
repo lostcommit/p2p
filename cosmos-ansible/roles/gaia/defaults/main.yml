@@ -74,7 +74,7 @@ statesync_chunk_fetchers: '4'
 fastsync_version: v0
 # TODO: All the other fastsync versions?
 
-prometheus_enabled: true
+prometheus_enabled: false
 prometheus_listen_addr: :26660
 instrumentation_namespace: tendermint
 
