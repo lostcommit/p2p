@@ -115,7 +115,7 @@
       jump: ACCEPT
       comment: Allow related and established connections
   
-  - name: Allow new incoming SYN packets on TCP port 22 (SSH)
+  - name: Allow new incoming ssh connections
     ansible.builtin.iptables:
       chain: INPUT
       protocol: tcp
@@ -123,10 +123,14 @@
       jump: ACCEPT
       comment: Accept new SSH connections.
 
-  - name: Allow new incoming connectopns to gaia
+  - name: Allow new incoming gaia connections
     ansible.builtin.iptables:
       chain: INPUT
-      destination_port: 26656
+      destination_ports: 
+        - "26656" # p2p
+        - "9090"  # grpc
+        - "26657" # rpc
+        - "26660" # prometheus
       protocol: tcp
       jump: ACCEPT
       comment: Accept new cosmos connections.

@@ -74,7 +74,7 @@ statesync_chunk_fetchers: '4'
 fastsync_version: v0
 # TODO: All the other fastsync versions?
 
-prometheus_enabled: false
+prometheus_enabled: true
 prometheus_listen_addr: :26660
 instrumentation_namespace: tendermint
 
@@ -91,11 +91,11 @@ inter_block_cache: true
 
 ### telemetry
 telemetry_service_name: ''
-telemetry_enabled: false
-telemetry_enable_hostname: false
+telemetry_enabled: true
+telemetry_enable_hostname: true
 telemetry_enable_hostname_label: false
 telemetry_enable_service_label: false
-prometheus_retention_time: '0'
+prometheus_retention_time: '30'
 
 ### API
 api_enabled: false
@@ -124,7 +124,7 @@ node_exporter_port: 9100
 
 ### Prometheus / Grafana defaults
 grafana_ssh_url: root@monitor.polypore.xyz
-monitoring_prometheus: false
+monitoring_prometheus: true
 
 ### PANIC monitoring defaults
 panic_ssh_url: root@monitor.polypore.xyz

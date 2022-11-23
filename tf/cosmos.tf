@@ -26,7 +26,7 @@ resource "digitalocean_droplet" "cosmos" {
       "export PATH=$PATH:/usr/bin",
       "export DEBIAN_FRONTEND=noninteractive",
       "export export DEBIAN_PRIORITY=critical",
-      "sleep 120",
+      "sleep 60",
       "apt -qy update",
       "apt install -qy python3-minimal python3-pip wget liblz4-tool aria2 jq chrony lynis",
       "pip install ansible"
@@ -34,11 +34,11 @@ resource "digitalocean_droplet" "cosmos" {
   }
 
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u root -i '${self.ipv4_address},' --private-key ${var.private_key} ../ansible/common.yaml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u root -i '${self.ipv4_address},' --private-key ${var.private_key} ../ansible/main.yaml"
   }
   
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ../cosmos-ansible/examples/inventory-theta.yml -e 'target=${self.ipv4_address},' --private-key ${var.private_key} ../cosmos-ansible/gaia.yaml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ../cosmos-ansible/examples/inventory-theta.yml -e 'target=${self.ipv4_address},' --private-key ${var.private_key} ../cosmos-ansible/gaia.yml"
   }
 }
 
