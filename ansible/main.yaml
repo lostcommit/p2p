@@ -1,0 +1,137 @@
+---
+
+- name: Common playbook
+  hosts: all
+  gather_facts: true
+  become: no
+  remote_user: root
+  vars: 
+    sysctl_settings:
+      vm.swappiness:
+        param_value: 5
+      net.core.netdev_max_backlog:
+        param_value: 30000
+      net.core.rmem_max:
+        param_value: 134217728
+      net.core.wmem_max:
+        param_value: 134217728
+      net.ipv4.tcp_max_syn_backlog:
+        param_value: 8192
+      net.ipv4.tcp_rmem:
+        param_value: "10240 131072 67108864"
+      net.ipv4.tcp_wmem:
+        param_value: "10240 131072 67108864"
+      net.ipv4.tcp_mem:
+        param_value: 180000 220000 300000
+      net.ipv4.tcp_window_scaling:
+        param_value: 1
+      net.ipv4.tcp_timestamps:
+        param_value: 1
+      net.ipv4.tcp_syncookies:
+        param_value: 1
+      net.ipv4.tcp_fin_timeout:
+        param_value: 10
+      net.unix.max_dgram_qlen:
+        param_value: 65535
+      net.ipv4.tcp_tw_reuse:
+        param_value: 1
+      net.ipv4.tcp_rfc1337:
+        param_value: 1
+      net.core.somaxconn:
+        param_value: 65535
+      net.ipv4.tcp_max_orphans:
+        param_value: 65536
+      dev.tty.ldisc_autoload:
+        param_value: 0
+      fs.protected_fifos:
+        param_value: 2
+      net.core.bpf_jit_harden:
+        param_value: 2
+      net.ipv4.conf.all.accept_redirects:
+        param_value: 0
+      net.ipv4.conf.all.log_martians:
+        param_value: 1
+      net.ipv4.conf.all.rp_filter:
+        param_value: 1
+      net.ipv4.conf.all.send_redirects:
+        param_value: 0
+      net.ipv4.conf.default.accept_redirects:
+        param_value: 0
+      net.ipv4.conf.default.log_martians:
+        param_value: 1
+      net.ipv6.conf.all.accept_redirects:
+        param_value: 0
+      net.ipv6.conf.default.accept_redirects:
+        param_value: 0
+
+  tasks:
+  - name: Generating locales
+    community.general.locale_gen:
+      name: "{{ item }}"
+    with_items:
+      - en_US.UTF-8
+      - ru_RU.UTF-8
+  
+  - name: Set default locale
+    command: localectl set-locale LANG=en_US.UTF-8 LC_MESSAGES=en_US.UTF-8 LC_NUMERIC=en_US.UTF-8 LANGUAGE=en_US
+
+  - name: Updating system
+    ansible.builtin.apt:
+      update_cache: yes
+      upgrade: yes
+
+  - name: Unconditionally reboot the machine with all defaults
+    ansible.builtin.reboot:
+
+  ### hardening
+  - name: Install lynis suggestions
+    ansible.builtin.apt:
+      dpkg_options: 'force-confold,force-confdef'
+      pkg:
+      - rkhunter
+      - libpam-tmpdir
+      - apt-listchanges
+      - fail2ban
+
+  - name: Setting sysctl
+    ansible.posix.sysctl:
+      name: "{{ item.key }}"
+      value: "{{ item.value.param_value }}"
+      state: present
+    with_dict: "{{ sysctl_settings }}"
+
+  ### iptables
+  - name: Allow related and established connections
+    ansible.builtin.iptables:
+      chain: INPUT
+      ctstate: ESTABLISHED,RELATED
+      jump: ACCEPT
+      comment: Allow related and established connections
+
+  - name: Allow localhost
+    ansible.builtin.iptables:
+      chain: INPUT
+      in_interface: lo
+      jump: ACCEPT
+      comment: Allow related and established connections
+  
+  - name: Allow new incoming SYN packets on TCP port 22 (SSH)
+    ansible.builtin.iptables:
+      chain: INPUT
+      protocol: tcp
+      destination_port: 22
+      jump: ACCEPT
+      comment: Accept new SSH connections.
+
+  - name: Allow new incoming connectopns to gaia
+    ansible.builtin.iptables:
+      chain: INPUT
+      destination_port: 26656
+      protocol: tcp
+      jump: ACCEPT
+      comment: Accept new cosmos connections.
+
+  - name: Set the policy for the INPUT chain to DROP
+    ansible.builtin.iptables:
+      chain: INPUT
+      policy: DROP

@@ -3,7 +3,7 @@ resource "digitalocean_droplet" "cosmos" {
     image = "ubuntu-22-04-x64"
     name = "cosmos"
     region = "ams3"
-    size = "s-2vcpu-2gb-amd"
+    size = "s-8vcpu-16gb"
     tags = [
       "blockchain",
       "test",
@@ -26,13 +26,19 @@ resource "digitalocean_droplet" "cosmos" {
       "export PATH=$PATH:/usr/bin",
       "export DEBIAN_FRONTEND=noninteractive",
       "export export DEBIAN_PRIORITY=critical",
+      "sleep 120",
       "apt -qy update",
-      "apt install -qy python3-minimal wget liblz4-tool aria2 jq chrony lynis",
+      "apt install -qy python3-minimal python3-pip wget liblz4-tool aria2 jq chrony lynis",
+      "pip install ansible"
     ]
   }
 
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u root -i '${self.ipv4_address},' --private-key ${var.private_key} ../ansible/testcase.yaml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u root -i '${self.ipv4_address},' --private-key ${var.private_key} ../ansible/common.yaml"
+  }
+  
+  provisioner "local-exec" {
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ../cosmos-ansible/examples/inventory-theta.yml -e 'target=${self.ipv4_address},' --private-key ${var.private_key} ../cosmos-ansible/gaia.yaml"
   }
 }
 
