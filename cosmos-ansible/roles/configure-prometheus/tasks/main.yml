@@ -10,7 +10,7 @@
 - name: Copy over Blackbox Exporter configuration
   template:
     src: blackbox.json.j2
-    dest: /etc/prometheus/file_sd/blackbox_{ inventory_hostname }}.json
+    dest: "/etc/prometheus/file_sd/blackbox_{{ inventory_hostname }}.json"
     mode: 0644
     owner: prometheus
     group: prometheus
